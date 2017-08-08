@@ -5,17 +5,8 @@
 		.module('app')
 		.config(config);
 
-	config.$inject = ['$urlRouterProvider','$stateProvider','$locationProvider'];
-
+	/*@ngInject*/
 	function config($urlRouterProvider,$stateProvider,$locationProvider){
-		/*$routeProvider
-			.when('/',{
-				templateUrl:'app/home/home.html',
-				controller:'HomeCtrl',
-				controllerAs:'homeVm'
-			})
-			.otherwise({redirectTo:'/'});*/
-
 	    $locationProvider.html5Mode({
 	     	enabled:false,
 	     	requireBase: false
@@ -31,9 +22,6 @@
 				templateUrl:'app/home/home.html',
 				controller:'HomeCtrl',
 				controllerAs:'homeVm'
-			});
-			//.state('otherwise',{url:'/otherwise'});
-
-		
+		});
 	}
 })();

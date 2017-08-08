@@ -29,21 +29,39 @@ module.exports = function(grunt){
 				dest:'tmp/templates.js'
 			}
 		},
+		ngAnnotate:{
+			options:{
+				singleQuotes: true,
+				remove:true,
+				separator:';'
+			},
+			all:{
+				files:[{
+					expand:true,
+					src:['app/*.module.js','app/*.js','app/**/*.js','!app/**/*.spec.js'],
+					ext:'.annotated.js',
+					extDot:'last',
+					dest:'tmp'
+				}]
+			}
+		},
 		concat:{
 			options:{
 				separator:';'
 			},
 			dist:{
-				src:['app/*.module.js','app/*.config.js','app/*.run.js','app/*.js','app/**/*.module.js','app/**/*.config.js','app/**/*.run.js','app/**/*.js','tmp/*.js','!app/**/*.spec.js'],
+				src:['tmp/app/*.module.annotated.js','tmp/app/*.config.annotated.js','tmp/app/*.run.annotated.js','tmp/app/*.annotated.js','tmp/app/**/*.module.annotated.js','tmp/app/**/*.config.annotated.js','tmp/app/**/*.run.annotated.js','tmp/app/**/*.annotated.js','tmp/*.js','!app/**/*.spec.js'],
 				dest:'dist/app.js'
 			}
 		},
 		uglify:{
-			files:{
+			dist:{
+				files:{
 				'dist/app.js':['dist/app.js']
-			},
-			options:{
-				mangle:false
+				},
+				options:{
+					mangle:false
+				}	
 			}
 		},
 		clean:{
@@ -54,14 +72,14 @@ module.exports = function(grunt){
 		watch:{
 			dev:{
 				files:['Gruntfile.js','app/*.js','app/**/*.js','*.html','app/**/*.html'],
-				tasks:[ 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp' ],
+				tasks:[ 'jshint', 'karma:unit', 'html2js:dist', 'ngAnnotate', 'concat:dist', 'clean:temp' ],
 			    options: {
 			      atBegin: true
 			    }
 			},
 			min:{
 				files:['Gruntfile.js','app/*.js','app/**/*.js','*.html','app/**/*.html'],
-				tasks:[ 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp','uglify:dist' ],
+				tasks:[ 'jshint', 'karma:unit', 'html2js:dist','ngAnnotate','concat:dist', 'clean:temp','uglify:dist' ],
 			    options: {
 			      atBegin: true
 			    }
@@ -78,24 +96,23 @@ module.exports = function(grunt){
 		compress: {
 	  		dist: {
 			    options: {
-			      archive: 'dist/<%= pkg.name %>-<%= pkg.version %>.zip'
+			      archive: '<%= pkg.name %>-<%= pkg.version %>.zip'
 			    },
 			    files: [{
 				      src: [ 'index.html' ],
 				      dest: '/'
 				    }, {
 				      src: [ 'dist/**' ],
-				      dest: 'dist/'
+				      dest: '/'
 				    }, {
 				      src: [ 'assets/**' ],
-				      dest: 'assets/'
+				      dest: '/'
 				    }, {
 				      src: [ 'node_modules/**' ],
-				      dest: 'node_modules/'
+				      dest: '/'
 			    }]
 		  	}
 		}
-
 	});
 
 	grunt.loadNpmTasks('grunt-npm-install');
@@ -108,9 +125,11 @@ module.exports = function(grunt){
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-karma');
+	grunt.loadNpmTasks('grunt-ng-annotate');
 
 	grunt.registerTask('build', ['npm-install', 'connect:server', 'watch:dev']);
+	grunt.registerTask('clean-path',['npm-install','clean:temp']);
 	grunt.registerTask('test', ['npm-install', 'jshint', 'karma:continuous']);
 	grunt.registerTask('build-minified', ['npm-install', 'connect:server', 'watch:min']);
-	grunt.registerTask('package', ['npm-install', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist','clean:temp', 'compress:dist']);
+	grunt.registerTask('package', ['npm-install', 'jshint', 'karma:unit', 'html2js:dist', 'ngAnnotate', 'concat:dist', 'uglify:dist','clean:temp', 'compress:dist']);
 };

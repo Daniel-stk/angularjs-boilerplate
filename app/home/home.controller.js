@@ -5,7 +5,7 @@
 		.module('app')
 		.controller('HomeCtrl',HomeController);
 
-
+	/*@ngNoInject*/
 	function HomeController(){
 		var homeVm = this;
 		homeVm.displayTitle = displayTitle;
