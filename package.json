@@ -1,7 +1,7 @@
 {
     "name": "angularjs-boilerplate",
     "version": "1.0.0",
-    "description": "Dependencies for angular projects",
+    "description": "Basic setup for AngularJs projects",
     "main": "app.module.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
